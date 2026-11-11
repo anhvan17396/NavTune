@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Writes src/NavTune/Assets/NavTune.ico. Usage: IconGen.exe output.ico [preview.png] -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\NavTune\Infrastructure\Brand.cs" Link="Brand.cs" />
+    <ProjectReference Include="..\..\src\NavTune.Core\NavTune.Core.csproj" />
+  </ItemGroup>
+
+</Project>

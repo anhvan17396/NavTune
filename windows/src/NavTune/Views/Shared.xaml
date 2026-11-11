@@ -1,0 +1,70 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:l="clr-namespace:NavTune.Infrastructure"
+                    xmlns:c="clr-namespace:NavTune.Controls">
+
+    <!-- Status pill: "Đang hoạt động", "Chờ âm thanh", ... (DataContext: AppState) -->
+    <DataTemplate x:Key="StatusBadge">
+        <Border CornerRadius="11" Padding="10,4,11,5" VerticalAlignment="Center"
+                Background="{Binding StatusColor, Converter={StaticResource SoftColorBrush}}" ToolTip="{Binding StatusHelp}">
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Width="7" Height="7" VerticalAlignment="Center" Fill="{Binding StatusColor, Converter={StaticResource ColorBrush}}" />
+                <TextBlock Text="{Binding StatusText}" Margin="6,0,0,0" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <!-- Problem banner with its fix (DataContext: AppState) -->
+    <DataTemplate x:Key="IssueBanner">
+        <Border CornerRadius="10" Padding="14,12" BorderThickness="1" Margin="0,0,0,14"
+                Background="{DynamicResource SystemFillColorCautionBackgroundBrush}"
+                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                Visibility="{Binding HasIssue, Converter={StaticResource Visible}}">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Left" Text="{x:Static l:Glyphs.Warning}" Style="{StaticResource Glyph}" VerticalAlignment="Top"
+                           Margin="0,2,12,0" Foreground="{DynamicResource SystemFillColorCautionBrush}" />
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                    <Button Content="{l:Tr 'Tải VB-CABLE', 'Get VB-CABLE'}" Command="{Binding InstallCableCommand}" Margin="0,0,8,0"
+                            Visibility="{Binding CanInstallCable, Converter={StaticResource Visible}}" />
+                    <Button Content="{l:Tr 'Thử lại', 'Try again'}" Command="{Binding RetryCommand}"
+                            Visibility="{Binding CanRetry, Converter={StaticResource Visible}}" />
+                </StackPanel>
+                <TextBlock Text="{Binding IssueText}" Style="{StaticResource Body}" VerticalAlignment="Center" />
+            </DockPanel>
+        </Border>
+    </DataTemplate>
+
+    <!-- Input gain, reset and save, under either EQ (DataContext: AppState) -->
+    <DataTemplate x:Key="EqFooter">
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Command="{Binding ResetEqCommand}" Margin="0,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{x:Static l:Glyphs.Reset}" Style="{StaticResource Glyph}" FontSize="13" Margin="0,0,6,0" />
+                        <TextBlock Text="{l:Tr 'Đặt lại', 'Reset'}" />
+                    </StackPanel>
+                </Button>
+                <Button Command="{Binding SavePresetCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{x:Static l:Glyphs.Save}" Style="{StaticResource Glyph}" FontSize="13" Margin="0,0,6,0" />
+                        <TextBlock Text="{l:Tr 'Lưu thành preset…', 'Save as preset…'}" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <TextBlock Text="{l:Tr 'Âm lượng đầu vào', 'Input gain'}" VerticalAlignment="Center" Margin="0,0,12,0"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+            <Slider Minimum="-12" Maximum="6" Value="{Binding Preamp}" Width="220" VerticalAlignment="Center" SmallChange="0.5" LargeChange="3" />
+            <Border Style="{StaticResource Pill}" Margin="12,0,0,0" HorizontalAlignment="Left">
+                <TextBlock Style="{StaticResource PillText}" Text="{Binding PreampText}" />
+            </Border>
+        </DockPanel>
+    </DataTemplate>
+
+    <!-- Card header: gradient icon, title, optional value on the right. -->
+    <Style x:Key="CardHeader" TargetType="DockPanel">
+        <Setter Property="Margin" Value="0,0,0,14" />
+        <Setter Property="LastChildFill" Value="True" />
+    </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,79 @@
+<UserControl x:Class="NavTune.Views.OnboardingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="clr-namespace:NavTune.Infrastructure"
+             xmlns:c="clr-namespace:NavTune.Controls">
+    <UserControl.Resources>
+        <Style x:Key="FeatureTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        </Style>
+    </UserControl.Resources>
+    <Grid Background="{DynamicResource SmokeFillColorDefaultBrush}">
+        <Border Width="620" HorizontalAlignment="Center" VerticalAlignment="Center" CornerRadius="14" Padding="34,24,34,30" BorderThickness="1"
+                Background="{DynamicResource SolidBackgroundFillColorBaseBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="40" ShadowDepth="8" Opacity="0.3" />
+            </Border.Effect>
+            <StackPanel>
+                <Border Style="{StaticResource SegmentHost}" HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Style="{StaticResource Segment}" GroupName="WelcomeLanguage" Content="Tiếng Việt" IsChecked="{Binding IsVietnamese}" />
+                        <RadioButton Style="{StaticResource Segment}" GroupName="WelcomeLanguage" Content="English"
+                                     IsChecked="{Binding IsVietnamese, Converter={StaticResource Not}}" />
+                    </StackPanel>
+                </Border>
+
+                <Image Source="{x:Static l:BrandIcon.AppImage}" Width="96" Height="96" Margin="0,2,0,18">
+                    <Image.Effect>
+                        <DropShadowEffect Color="#615CFA" BlurRadius="28" ShadowDepth="6" Opacity="0.45" />
+                    </Image.Effect>
+                </Image>
+                <TextBlock Text="{l:Tr 'Chào mừng đến với NavTune', 'Welcome to NavTune'}" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                <TextBlock Text="{l:Tr 'Âm thanh hay hơn cho mọi thứ anh nghe trên máy tính.', 'Better sound for everything you hear on your PC.'}"
+                           Style="{StaticResource Secondary}" FontSize="14" HorizontalAlignment="Center" Margin="0,6,0,24" />
+
+                <StackPanel HorizontalAlignment="Center" Width="470">
+                    <DockPanel Margin="0,0,0,14">
+                        <c:IconBadge Glyph="{x:Static l:Glyphs.Equalizer}" Size="36" DockPanel.Dock="Left" VerticalAlignment="Top" Margin="0,0,14,0" />
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource FeatureTitle}" Text="{l:Tr 'EQ đồ hoạ, EQ tham số và 24 preset', 'Graphic &amp; parametric EQ, 24 presets'}" />
+                            <TextBlock Style="{StaticResource Secondary}" Text="{l:Tr 'Bolero, V-Pop, Rock, EDM, Jazz… chọn một chạm.', 'Bolero, V-Pop, Rock, EDM, Jazz… one click away.'}" />
+                        </StackPanel>
+                    </DockPanel>
+                    <DockPanel Margin="0,0,0,14">
+                        <c:IconBadge Glyph="{x:Static l:Glyphs.Effects}" Size="36" DockPanel.Dock="Left" VerticalAlignment="Top" Margin="0,0,14,0" />
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource FeatureTitle}" Text="{l:Tr 'Hiệu ứng nâng cao', 'Advanced effects'}" />
+                            <TextBlock Style="{StaticResource Secondary}" Text="{l:Tr 'Bass, độ trong, không gian 3D, cân bằng và tăng âm lượng.', 'Bass, clarity, 3D space, volume leveler and boost.'}" />
+                        </StackPanel>
+                    </DockPanel>
+                    <DockPanel>
+                        <c:IconBadge Glyph="{x:Static l:Glyphs.Apps}" Size="36" DockPanel.Dock="Left" VerticalAlignment="Top" Margin="0,0,14,0" />
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource FeatureTitle}" Text="{l:Tr 'Riêng cho từng thiết bị và ứng dụng', 'Per device and per app'}" />
+                            <TextBlock Style="{StaticResource Secondary}" Text="{l:Tr 'Tai nghe và loa nhớ cài đặt riêng; tắt tiếng hoặc giảm âm lượng từng ứng dụng.', 'Headphones and speakers remember their own settings; mute or turn down any app.'}" />
+                        </StackPanel>
+                    </DockPanel>
+                </StackPanel>
+
+                <Border Style="{StaticResource Inset}" Margin="0,24,0,0">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Text="{x:Static l:Glyphs.Shield}" Style="{StaticResource Glyph}" FontSize="18" VerticalAlignment="Top"
+                                   Margin="0,2,12,0" Foreground="{StaticResource BrandAccentBrush}" />
+                        <StackPanel>
+                            <TextBlock Text="{Binding OnboardingNote}" Style="{StaticResource Secondary}" />
+                            <Button Content="{l:Tr 'Tải VB-CABLE (miễn phí)', 'Get VB-CABLE (free)'}" Command="{Binding InstallCableCommand}" HorizontalAlignment="Left"
+                                    Margin="0,10,0,0" Visibility="{Binding HasVirtualDevice, Converter={StaticResource Hidden}}" />
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Button Style="{StaticResource GradientButton}" Command="{Binding CompleteOnboardingCommand}" HorizontalAlignment="Center" Margin="0,24,0,0"
+                        Content="{l:Tr 'Bắt đầu sử dụng', 'Get started'}" IsDefault="True" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

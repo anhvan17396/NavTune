@@ -1,0 +1,105 @@
+<UserControl x:Class="NavTune.Views.EffectsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="clr-namespace:NavTune.Infrastructure"
+             xmlns:c="clr-namespace:NavTune.Controls">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="28,4,24,28" IsEnabled="{Binding IsOn}">
+            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource IssueBanner}" Focusable="False" />
+            <UniformGrid Columns="2">
+                <!-- Bass -->
+                <Border Style="{StaticResource Card}" Margin="0,0,8,16">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,12">
+                            <c:IconBadge Glyph="{x:Static l:Glyphs.Bass}" DockPanel.Dock="Left" />
+                            <Border Style="{StaticResource Pill}" DockPanel.Dock="Right">
+                                <TextBlock Style="{StaticResource PillText}" Text="{Binding BassText}" />
+                            </Border>
+                            <TextBlock Style="{StaticResource Headline}" Margin="10,0,0,0" Text="Bass" />
+                        </DockPanel>
+                        <Slider Minimum="-12" Maximum="12" Value="{Binding Bass}" SmallChange="0.5" LargeChange="3" />
+                        <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
+                                   Text="{l:Tr 'Tăng hoặc giảm âm trầm, dưới khoảng 90 Hz.', 'Boost or cut the low end, below about 90 Hz.'}" />
+                    </StackPanel>
+                </Border>
+                <!-- Clarity -->
+                <Border Style="{StaticResource Card}" Margin="8,0,0,16">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,12">
+                            <c:IconBadge Glyph="{x:Static l:Glyphs.Clarity}" DockPanel.Dock="Left" />
+                            <Border Style="{StaticResource Pill}" DockPanel.Dock="Right">
+                                <TextBlock Style="{StaticResource PillText}" Text="{Binding ClarityText}" />
+                            </Border>
+                            <TextBlock Style="{StaticResource Headline}" Margin="10,0,0,0" Text="{l:Tr 'Độ trong', 'Clarity'}" />
+                        </DockPanel>
+                        <Slider Minimum="-12" Maximum="12" Value="{Binding Clarity}" SmallChange="0.5" LargeChange="3" />
+                        <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
+                                   Text="{l:Tr 'Làm tiếng sáng và chi tiết hơn (trên 9 kHz).', 'Brighter, more detailed highs (above 9 kHz).'}" />
+                    </StackPanel>
+                </Border>
+                <!-- 3D space -->
+                <Border Style="{StaticResource Card}" Margin="0,0,8,16">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,12">
+                            <c:IconBadge Glyph="{x:Static l:Glyphs.Space}" DockPanel.Dock="Left" />
+                            <Border Style="{StaticResource Pill}" DockPanel.Dock="Right">
+                                <TextBlock Style="{StaticResource PillText}" Text="{Binding WidthText}" />
+                            </Border>
+                            <TextBlock Style="{StaticResource Headline}" Margin="10,0,0,0" Text="{l:Tr 'Không gian 3D', '3D Space'}" />
+                        </DockPanel>
+                        <Slider Minimum="0" Maximum="2" Value="{Binding Width}" SmallChange="0.05" LargeChange="0.25" />
+                        <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
+                                   Text="{l:Tr 'Mở rộng âm trường stereo. 100% là gốc, 0% là mono.', 'Widens the stereo image. 100% is original, 0% is mono.'}" />
+                    </StackPanel>
+                </Border>
+                <!-- Leveler -->
+                <Border Style="{StaticResource Card}" Margin="8,0,0,16">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,12">
+                            <c:IconBadge Glyph="{x:Static l:Glyphs.Dial}" DockPanel.Dock="Left" />
+                            <Border Style="{StaticResource Pill}" DockPanel.Dock="Right">
+                                <TextBlock Style="{StaticResource PillText}" Text="{Binding LoudnessText}" />
+                            </Border>
+                            <TextBlock Style="{StaticResource Headline}" Margin="10,0,0,0" Text="{l:Tr 'Cân bằng âm lượng', 'Volume leveler'}" />
+                        </DockPanel>
+                        <Slider Minimum="0" Maximum="1" Value="{Binding Loudness}" SmallChange="0.05" LargeChange="0.2" />
+                        <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
+                                   Text="{l:Tr 'Giảm chênh lệch to nhỏ giữa các bài hát và video.', 'Evens out loud and quiet songs and videos.'}" />
+                    </StackPanel>
+                </Border>
+                <!-- Boost -->
+                <Border Style="{StaticResource Card}" Margin="0,0,8,16">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,12">
+                            <c:IconBadge Glyph="{x:Static l:Glyphs.Boost}" DockPanel.Dock="Left" />
+                            <Border Style="{StaticResource Pill}" DockPanel.Dock="Right">
+                                <TextBlock Style="{StaticResource PillText}" Text="{Binding BoostText}" />
+                            </Border>
+                            <TextBlock Style="{StaticResource Headline}" Margin="10,0,0,0" Text="{l:Tr 'Tăng âm lượng', 'Volume boost'}" />
+                        </DockPanel>
+                        <Slider Minimum="0" Maximum="12" Value="{Binding Boost}" SmallChange="0.5" LargeChange="3" />
+                        <TextBlock Style="{StaticResource Caption}" Margin="0,8,0,0"
+                                   Text="{l:Tr 'Tăng to hơn mức tối đa của máy, có bộ chống vỡ tiếng.', 'Louder than the system maximum, with clipping protection.'}" />
+                    </StackPanel>
+                </Border>
+                <!-- Tips -->
+                <Border Style="{StaticResource Card}" Margin="8,0,0,16">
+                    <DockPanel>
+                        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+                            <c:IconBadge Glyph="{x:Static l:Glyphs.Tips}" DockPanel.Dock="Left" />
+                            <TextBlock Style="{StaticResource Headline}" Margin="10,0,0,0" Text="{l:Tr 'Gợi ý', 'Tips'}" />
+                        </DockPanel>
+                        <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left" Command="{Binding ResetEffectsCommand}" Margin="0,10,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{x:Static l:Glyphs.Reset}" Style="{StaticResource Glyph}" FontSize="13" Margin="0,0,6,0" />
+                                <TextBlock Text="{l:Tr 'Đặt lại hiệu ứng', 'Reset effects'}" />
+                            </StackPanel>
+                        </Button>
+                        <TextBlock Style="{StaticResource Caption}"
+                                   Text="{l:Tr 'Tai nghe Bluetooth: Bass +3, Độ trong +2, Không gian 120%.&#x0a;Xem YouTube nhiều kênh: bật Cân bằng âm lượng 50%.', 'Bluetooth headphones: Bass +3, Clarity +2, 3D Space 120%.&#x0a;Watching many YouTube channels: Volume leveler 50%.'}" />
+                    </DockPanel>
+                </Border>
+            </UniformGrid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

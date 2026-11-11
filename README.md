@@ -4,6 +4,8 @@
 
 NavTune nhận toàn bộ âm thanh của máy (YouTube, Chrome, Safari, Spotify…), chỉnh EQ và hiệu ứng, rồi phát ra tai nghe / loa đang dùng, kể cả Bluetooth.
 
+**Bản Windows** (Windows 10 / 11, C# / WPF) nằm trong thư mục [`windows/`](windows/README.md): cùng bộ xử lý âm thanh, preset và định dạng file preset.
+
 ## Mới trong v1.3: tắt tiếng từng ứng dụng
 
 Tắt tiếng một ứng dụng **ở loa / tai nghe của mình**, còn ứng dụng vẫn chạy và vẫn phát như bình thường:

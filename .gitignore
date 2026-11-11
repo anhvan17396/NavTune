@@ -2,3 +2,11 @@
 build/
 .DS_Store
 .swiftpm/
+
+# Windows (.NET)
+bin/
+obj/
+.vs/
+*.user
+windows/dist/
+__pycache__/

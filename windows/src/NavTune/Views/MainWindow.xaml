@@ -1,0 +1,85 @@
+<Window x:Class="NavTune.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:NavTune.Infrastructure"
+        xmlns:c="clr-namespace:NavTune.Controls"
+        xmlns:v="clr-namespace:NavTune.Views"
+        Title="NavTune" Width="1100" Height="780" MinWidth="980" MinHeight="660"
+        WindowStartupLocation="CenterScreen" Icon="pack://application:,,,/Assets/NavTune.ico">
+    <Window.InputBindings>
+        <KeyBinding Key="B" Modifiers="Ctrl" Command="{Binding BypassCommand}" />
+    </Window.InputBindings>
+    <Grid x:Name="Root">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="236" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <DockPanel Margin="12,14,10,12">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="6,2,0,18">
+                <Image Source="{x:Static l:BrandIcon.AppImage}" Width="34" Height="34" />
+                <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="NavTune" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    <TextBlock Text="navtools.vn" FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </StackPanel>
+            <Border DockPanel.Dock="Bottom" Style="{StaticResource Inset}" Padding="12">
+                <StackPanel>
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding ActiveDeviceGlyph}" Style="{StaticResource Glyph}" Margin="0,0,10,0"
+                                   Foreground="{StaticResource BrandAccentBrush}" />
+                        <StackPanel>
+                            <TextBlock Text="{Binding ActiveDeviceName}" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" ToolTip="{Binding ActiveDeviceName}" />
+                            <TextBlock Text="{Binding CurrentPresetName}" FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                        </StackPanel>
+                    </DockPanel>
+                    <c:LevelMeter Height="4" Margin="0,10,0,0" />
+                </StackPanel>
+            </Border>
+            <ListBox x:Name="Nav" ItemContainerStyle="{StaticResource NavItem}" Background="Transparent" BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Glyph}" Width="20" Margin="0,0,12,0"
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                            <TextBlock Text="{Binding Title}" FontSize="14" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+
+        <!-- Page -->
+        <Border Grid.Column="1" CornerRadius="10,0,0,0" BorderThickness="1,1,0,0"
+                Background="{DynamicResource LayerFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <DockPanel Margin="28,18,24,14">
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                        <ContentControl Content="{Binding}" ContentTemplate="{StaticResource StatusBadge}" Margin="0,0,12,0" Focusable="False" />
+                        <ToggleButton IsChecked="{Binding Bypass}" IsEnabled="{Binding IsOn}" Margin="0,0,18,0"
+                                      ToolTip="{l:Tr 'Nghe bản gốc để so sánh trước / sau (Ctrl+B)', 'Hear the original to compare before / after (Ctrl+B)'}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{x:Static l:Glyphs.Compare}" Style="{StaticResource Glyph}" FontSize="13" Margin="0,0,7,0"
+                                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
+                                <TextBlock Text="{l:Tr 'Nghe bản gốc', 'Original sound'}" />
+                            </StackPanel>
+                        </ToggleButton>
+                        <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding IsOn}" VerticalAlignment="Center"
+                                  Content="{l:Tr 'Bật NavTune', 'NavTune on'}" ToolTip="{l:Tr 'Bật / tắt NavTune', 'Turn NavTune on / off'}" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding SelectedItem.Title, ElementName=Nav}" Style="{StaticResource PageTitle}" VerticalAlignment="Center" />
+                </DockPanel>
+                <ContentControl x:Name="PageHost" Grid.Row="1" Focusable="False" />
+            </Grid>
+        </Border>
+
+        <v:OnboardingView Grid.ColumnSpan="2" Visibility="{Binding IsWelcomeVisible, Converter={StaticResource Visible}}" />
+    </Grid>
+</Window>

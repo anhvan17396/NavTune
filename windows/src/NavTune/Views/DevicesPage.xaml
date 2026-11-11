@@ -1,0 +1,126 @@
+<UserControl x:Class="NavTune.Views.DevicesPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="clr-namespace:NavTune.Infrastructure">
+    <UserControl.Resources>
+        <Style x:Key="Label" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,6,24,6" />
+        </Style>
+        <Style x:Key="Value" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="28,4,24,28">
+            <ContentControl Content="{Binding}" ContentTemplate="{StaticResource IssueBanner}" Focusable="False" />
+
+            <TextBlock Style="{StaticResource SectionHeader}" Margin="2,0,0,8" Text="{l:Tr 'Phát âm thanh qua', 'Play sound through'}" />
+            <Border Style="{StaticResource Card}" Padding="16,10" Margin="0,0,0,6">
+                <ItemsControl ItemsSource="{Binding OutputDevices}" Focusable="False">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton GroupName="OutputDevice" IsChecked="{Binding IsSelected}" Margin="0,5" VerticalContentAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Glyph}" Style="{StaticResource Glyph}" Margin="2,0,10,0" Foreground="{StaticResource BrandAccentBrush}" />
+                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                    <TextBlock Text="{Binding Kind}" Style="{StaticResource Caption}" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                    <TextBlock Text="{x:Static l:Glyphs.StarFill}" Style="{StaticResource Glyph}" FontSize="11" Margin="8,0,0,0"
+                                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                               ToolTip="{l:Tr 'Đã lưu cài đặt riêng cho thiết bị này', 'Has its own saved settings'}"
+                                               Visibility="{Binding HasSavedSettings, Converter={StaticResource Visible}}" />
+                                </StackPanel>
+                            </RadioButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+            <TextBlock Style="{StaticResource Caption}" Margin="2,0,0,18"
+                       Text="{l:Tr 'Chọn loa hoặc tai nghe ngay trong Windows (biểu tượng loa ở thanh tác vụ) cũng được: NavTune tự chuyển theo.', 'You can also pick speakers or headphones in Windows (the speaker icon on the taskbar): NavTune follows along.'}" />
+
+            <TextBlock Style="{StaticResource SectionHeader}" Margin="2,0,0,8" Text="{l:Tr 'Đang phát', 'Now playing'}" />
+            <Border Style="{StaticResource Card}" Padding="16,8" Margin="0,0,0,18">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Style="{StaticResource Label}" Text="{l:Tr 'Thiết bị', 'Device'}" />
+                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Text="{Binding ActiveDeviceGlyph}" Style="{StaticResource Glyph}" Margin="0,0,8,0" Foreground="{StaticResource BrandAccentBrush}" />
+                        <TextBlock Text="{Binding ActiveDeviceName}" Style="{StaticResource Value}" />
+                    </StackPanel>
+                    <TextBlock Grid.Row="1" Style="{StaticResource Label}" Text="{l:Tr 'Kết nối', 'Connection'}" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource Value}" Text="{Binding ActiveDeviceKind}" />
+                    <TextBlock Grid.Row="2" Style="{StaticResource Label}" Text="{l:Tr 'Thiết bị ảo', 'Virtual device'}" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource Value}" Text="{Binding VirtualDeviceName}" />
+                    <TextBlock Grid.Row="3" Style="{StaticResource Label}" Text="{l:Tr 'Tần số lấy mẫu', 'Sample rate'}" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource Value}" Text="{Binding SampleRateText}" />
+                    <TextBlock Grid.Row="4" Style="{StaticResource Label}" Text="{l:Tr 'Độ trễ thêm', 'Added latency'}" />
+                    <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource Value}" Text="{Binding LatencyText}" />
+                    <TextBlock Grid.Row="5" Style="{StaticResource Label}" Text="{l:Tr 'Trạng thái', 'Status'}" />
+                    <ContentControl Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" Content="{Binding}" ContentTemplate="{StaticResource StatusBadge}" Focusable="False" />
+                </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,0,0,18">
+                <StackPanel>
+                    <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding PerDeviceProfiles}"
+                              Content="{l:Tr 'Nhớ cài đặt riêng cho từng thiết bị', 'Remember settings per device'}" />
+                    <TextBlock Style="{StaticResource Caption}" Margin="0,8,60,0"
+                               Text="{l:Tr 'Ví dụ: tai nghe Bluetooth dùng preset “Tăng Bass”, loa ngoài dùng “Gốc”. NavTune tự đổi khi anh kết nối thiết bị khác.', 'For example: Bluetooth headphones on “Bass Boost”, speakers on “Flat”. NavTune switches automatically when you change devices.'}" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Style="{StaticResource SectionHeader}" Margin="2,0,0,8" Text="{l:Tr 'Thiết bị âm thanh ảo', 'Virtual audio device'}" />
+            <Border Style="{StaticResource Card}" Margin="0,0,0,18">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource Secondary}"
+                               Text="{l:Tr 'Khi NavTune bật, thiết bị ảo được đặt làm loa mặc định của Windows: mọi ứng dụng phát vào đó, NavTune xử lý rồi phát ra thiết bị anh chọn ở trên. Tắt NavTune thì Windows trở lại như cũ. Phím âm lượng vẫn chỉnh loa thật như bình thường.', 'While NavTune is on, the virtual device is the Windows default speaker: every app plays into it, NavTune processes the sound and plays it on the device chosen above. Turn NavTune off and Windows is back to normal. The volume keys still control your real speakers.'}" />
+                    <DockPanel Margin="0,14,0,0">
+                        <Button DockPanel.Dock="Right" Command="{Binding InstallCableCommand}" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{x:Static l:Glyphs.Import}" Style="{StaticResource Glyph}" FontSize="13" Margin="0,0,6,0" />
+                                <TextBlock Text="{l:Tr 'Tải VB-CABLE (miễn phí)', 'Get VB-CABLE (free)'}" />
+                            </StackPanel>
+                        </Button>
+                        <ComboBox Width="340" HorizontalAlignment="Left" VerticalAlignment="Center" ItemsSource="{Binding VirtualDevices}"
+                                  DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding VirtualDeviceId}" />
+                    </DockPanel>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Style="{StaticResource SectionHeader}" Margin="2,0,0,8" Text="{l:Tr 'Độ trễ', 'Latency'}" />
+            <Border Style="{StaticResource Card}" Padding="16,10" Margin="0,0,0,18">
+                <StackPanel>
+                    <RadioButton GroupName="Latency" Margin="0,5" IsChecked="{Binding Latency, Converter={StaticResource Equals}, ConverterParameter=Low}"
+                                 Content="{l:Tr 'Thấp (≈ 45 ms): chơi game, xem phim; cần máy chạy ổn định', 'Low (≈ 45 ms): games and movies; needs a steady PC'}" />
+                    <RadioButton GroupName="Latency" Margin="0,5" IsChecked="{Binding Latency, Converter={StaticResource Equals}, ConverterParameter=Balanced}"
+                                 Content="{l:Tr 'Cân bằng (≈ 65 ms): khuyên dùng', 'Balanced (≈ 65 ms): recommended'}" />
+                    <RadioButton GroupName="Latency" Margin="0,5" IsChecked="{Binding Latency, Converter={StaticResource Equals}, ConverterParameter=Safe}"
+                                 Content="{l:Tr 'An toàn (≈ 120 ms): nếu nghe thấy tiếng lụp bụp', 'Safe (≈ 120 ms): if you hear crackles'}" />
+                </StackPanel>
+            </Border>
+
+            <StackPanel Visibility="{Binding ActiveDeviceIsBluetooth, Converter={StaticResource Visible}}">
+                <TextBlock Style="{StaticResource SectionHeader}" Margin="2,0,0,8" Text="{l:Tr 'Lưu ý về Bluetooth', 'About Bluetooth'}" />
+                <Border Style="{StaticResource Card}">
+                    <TextBlock Style="{StaticResource Secondary}"
+                               Text="{l:Tr 'Windows gửi âm thanh qua Bluetooth bằng chuẩn nén (SBC, AAC hoặc aptX tuỳ thiết bị), NavTune không thay đổi được chuẩn này. NavTune chỉnh âm trước khi nén, nên nghe rõ, ấm và chắc hơn, nhưng không khôi phục chi tiết đã mất do nén.', 'Windows sends Bluetooth audio with a compressed codec (SBC, AAC or aptX depending on the device), which NavTune can’t change. NavTune shapes the sound before compression, so it sounds clearer, warmer and fuller, but it can’t restore detail lost to compression.'}" />
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

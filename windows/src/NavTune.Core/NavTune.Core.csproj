@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>NavTune</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="NavTune.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- YAMNet sound classifier (Google, Apache 2.0): weights converted by tools/yamnet/convert_yamnet.py,
+         class names from the AudioSet ontology (CC BY 4.0). -->
+    <EmbeddedResource Include="Resources\yamnet.bin" LogicalName="yamnet.bin" />
+    <EmbeddedResource Include="Resources\yamnet_class_map.csv" LogicalName="yamnet_class_map.csv" />
+  </ItemGroup>
+
+</Project>
