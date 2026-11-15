@@ -76,7 +76,7 @@ Bật công tắc **Tự chọn preset theo nội dung** ở trang *Bộ chỉnh
 
 - Bản macOS dùng bộ nhận dạng âm thanh có sẵn của Apple. Windows không có thứ tương đương, nên NavTune mang theo **YAMNet**, mô hình nhận dạng 521 loại âm thanh (AudioSet) của Google, viết lại bằng C# và chạy ngay trên máy: không cần mạng, không gửi âm thanh đi đâu.
 - NavTune nghe âm thanh gốc (trước khi qua EQ), phân tích 1 giây gần nhất sau mỗi 0,75 giây và ra kết luận khoảng 1,5 giây một lần. Như bản macOS, chỉ đổi preset khi **3 lần liên tiếp** cùng một kết luận (khoảng 5 giây), rồi chuyển êm sang đường EQ mới trong 1,2 giây.
-- YAMNet chấm thể loại / nhạc cụ thấp hơn bộ nhận dạng của Apple, nên bản Windows gộp các nhãn cùng nhóm (ví dụ *Rock music*, *Grunge*, *Electric guitar*… cho Rock) và thêm hai luật để không nhảy preset giữa bài. Một là Pop (khi chưa nghe ra phong cách nào) cần 6 lần liên tiếp. Hai là đã nhận ra một phong cách (Rock, Piano…) thì **giữ suốt bài**, kể cả đoạn nhẹ, và chỉ đổi khi nghe ra phong cách khác, có lời nói, nhạc ngừng (hết bài) hoặc 30 giây liền không còn dấu hiệu nào của nó.
+- YAMNet chấm thể loại / nhạc cụ thấp hơn bộ nhận dạng của Apple, nên bản Windows gộp các nhãn cùng nhóm (ví dụ *Rock music*, *Grunge*, *Electric guitar*… cho Rock) và thêm hai luật để không nhảy preset giữa bài. Một là Pop (khi chưa nghe ra phong cách nào) cần 6 lần liên tiếp. Hai là đã nhận ra một phong cách (Rock, Piano…) thì **giữ suốt bài**, kể cả đoạn nhẹ, và chỉ đổi khi nghe ra phong cách khác, có lời nói, nhạc ngừng (hết bài) hoặc 30 giây liền không còn dấu hiệu nào của nó. Lời nói cũng được giữ như vậy: video vừa nói vừa có nhạc nền vẫn ở preset Podcast, hết nói khoảng 12 giây mới đổi.
 - Thử trên nhạc thật: rock, jazz big band, rap, piano solo, giao hưởng, guitar mộc và giọng đọc đều ra đúng preset. Bài không nổi bật nhạc cụ hay thể loại nào thì dùng Pop.
 - Rất nhẹ: khoảng 3 ms cho mỗi lần phân tích (dưới 0,5% một nhân CPU). Mô hình chỉ được nạp (khoảng 15 MB RAM) khi bật công tắc.
 - Tự chọn preset khác, kéo thanh EQ hay chuyển sang EQ tham số thì chế độ tự động tắt (như bản macOS). Khi đang *Nghe bản gốc* thì NavTune tạm không phân tích.
@@ -84,6 +84,7 @@ Bật công tắc **Tự chọn preset theo nội dung** ở trang *Bộ chỉnh
 ## Xử lý sự cố
 
 - **Không có tiếng**: mở NavTune và xem dòng thông báo màu cam ở đầu trang. Nó cho biết nguyên nhân (thiếu thiết bị ảo, FxSound đang chạy, loa bị ứng dụng khác chiếm…) và có nút sửa.
+- **Gọi điện (Zalo, Teams, Zoom, Discord…) không có tiếng sau khi cài VB-CABLE**: lúc cài driver, Windows có thể tự đặt *CABLE Input* làm thiết bị liên lạc mặc định. Vào *Settings → System → Sound → More sound settings*, tab *Playback*, chuột phải loa thật → *Set as Default Communication Device*.
 - **Trả loa mặc định về như cũ ngay lập tức**: thoát NavTune (chuột phải biểu tượng ở khay → Thoát NavTune). Nếu NavTune đã bị tắt đột ngột mà loa chưa về, chạy `NavTune.exe --restore-audio` hoặc chọn loa trong *Settings → System → Sound*.
 - **Thoát NavTune từ dòng lệnh**: `NavTune.exe --quit`.
 - **Nhật ký**: `%LOCALAPPDATA%\NavTune\navtune.log` (*Cài đặt → Mở thư mục nhật ký*). Cài đặt và preset nằm ở `%APPDATA%\NavTune\settings.json`.

@@ -39,9 +39,10 @@ public static class ContentKinds
 }
 
 /// <summary>
-/// One analysis window's verdict, plus the strongest classes for the log. <paramref name="Hint"/> is the style
-/// with at least a faint sign, even when too faint to decide on. <paramref name="IsPause"/> marks that nothing
-/// played for a moment (Windows sends no audio at all then), e.g. between two songs.
+/// One analysis window's verdict, plus the strongest classes for the log. <paramref name="Hint"/> is what the window
+/// leans towards even when too faint to decide on: speech when talk is about as loud as the music behind it, else
+/// the style with at least a faint sign. <paramref name="IsPause"/> marks that nothing played for a moment
+/// (Windows sends no audio at all then), e.g. between two songs.
 /// </summary>
 public sealed record ContentResult(ContentKind? Kind, string Summary, bool IsPause = false, ContentKind? Hint = null);
 
@@ -51,13 +52,15 @@ public sealed record ContentResult(ContentKind? Kind, string Summary, bool IsPau
 /// so two things are added. Pop, the verdict when nothing stands out yet, needs six in a row (about 9 s), so a song
 /// doesn't pass through pop before its style is recognized. And a style once found (rock, piano…) is held through
 /// the quieter passages of the same song, where the verdict falls back to pop: it changes when another style or
-/// speech is heard, after a pause, or after about 30 s without even a faint sign of it.
+/// speech is heard, after a pause, or after about 30 s without even a faint sign of it. Speech is held the same
+/// way through a video's music bed, and let go after about 12 s without talk.
 /// </summary>
 public sealed class AutoPresetPolicy
 {
     public const int Confirmations = 3;
     public const int PopConfirmations = 6;
     public const int PopToRelease = 20;
+    public const int SpeechToRelease = 8;
 
     private ContentKind? pending, held;
     private int count, popRun, quietRun;
@@ -86,9 +89,9 @@ public sealed class AutoPresetPolicy
         quietRun = 0;
         if (kind == ContentKind.Pop && held is { } style)
         {
-            // A faint sign of the held style means a quieter passage of the same song.
+            // A faint sign of the held style means a quieter passage of the same song (or talk over music).
             popRun = result.Hint == style ? 0 : popRun + 1;
-            if (popRun < PopToRelease) return null;
+            if (popRun < (style == ContentKind.Speech ? SpeechToRelease : PopToRelease)) return null;
         }
         else if (kind != ContentKind.Pop)
         {
@@ -105,7 +108,7 @@ public sealed class AutoPresetPolicy
             count = 1;
         }
         if (count < (kind == ContentKind.Pop ? PopConfirmations : Confirmations)) return null;
-        held = kind is ContentKind.Pop or ContentKind.Speech ? null : kind;
+        held = kind == ContentKind.Pop ? null : kind;
         return kind;
     }
 }
@@ -155,6 +158,12 @@ public sealed class ContentAnalyzer
     internal const double HintEvidence = MinEvidence / 3;
 
     /// <summary>
+    /// Talk at least this loud relative to the music still counts as talk over a music bed (videos, shows), which keeps
+    /// the speech preset; deciding on speech in the first place needs speech above 1.5x the music, as on macOS.
+    /// </summary>
+    internal const double TalkOverMusic = 0.67;
+
+    /// <summary>
     /// The macOS rules: nothing unless music or speech is clearly there; speech when it outweighs music and nobody
     /// sings or raps; else the instrument or genre heard most clearly; else pop.
     /// </summary>
@@ -170,12 +179,14 @@ public sealed class ContentAnalyzer
         double music = Max(MusicLabels);
         double speech = Max(SpeechLabels);
         if (Math.Max(music, speech) <= 0.2) return null;
-        if (speech > music * 1.5 && Max(VoiceLabels) < 0.3) return ContentKind.Speech;
+        bool sung = Max(VoiceLabels) >= 0.3;
+        if (speech > music * 1.5 && !sung) return ContentKind.Speech;
 
         var best = Candidates
             .Select(c => (c.Kind, Evidence: 1 - c.Labels.Aggregate(1.0, (p, label) => p * (1 - Math.Clamp(score(label), 0, 1)))))
             .MaxBy(c => c.Evidence);
-        if (best.Evidence >= HintEvidence) hint = best.Kind;
+        if (speech >= music * TalkOverMusic && !sung) hint = ContentKind.Speech;
+        else if (best.Evidence >= HintEvidence) hint = best.Kind;
         return best.Evidence > MinEvidence ? best.Kind : ContentKind.Pop;
     }
 

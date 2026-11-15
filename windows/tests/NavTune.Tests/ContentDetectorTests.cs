@@ -91,6 +91,30 @@ public class ContentDetectorTests
     }
 
     [Fact]
+    public void HoldsSpeechThroughAMusicBed()
+    {
+        // A YouTube video with music behind the talk, as logged on a real PC: speech and music close together.
+        Assert.Equal(ContentKind.Speech, Classify(new() { ["Speech"] = 0.86, ["Music"] = 0.27 }));
+        Assert.Equal(ContentKind.Pop, ClassifyWithHint(new() { ["Speech"] = 0.43, ["Music"] = 0.46 }, out var hint));
+        Assert.Equal(ContentKind.Speech, hint);
+        ClassifyWithHint(new() { ["Speech"] = 0.30, ["Music"] = 0.90, ["Singing"] = 0.40 }, out hint);
+        Assert.Null(hint);
+
+        var policy = new AutoPresetPolicy();
+        Assert.Equal(ContentKind.Speech, Feed(policy, ContentKind.Speech, ContentKind.Speech, ContentKind.Speech).Last());
+        // Talk over music: stays on the speech preset however long it lasts...
+        var talk = Enumerable.Range(0, 40).Select(_ => policy.Next(new ContentResult(ContentKind.Pop, "", Hint: ContentKind.Speech)));
+        Assert.All(talk, d => Assert.Null(d));
+        // ...but a song after the talk takes over within about 20 s.
+        var song = Feed(policy, Enumerable.Repeat<ContentKind?>(ContentKind.Pop, 20).ToArray());
+        int switchedAt = song.FindIndex(d => d == ContentKind.Pop);
+        Assert.InRange(switchedAt, AutoPresetPolicy.SpeechToRelease, 14);
+    }
+
+    private static ContentKind? ClassifyWithHint(Dictionary<string, double> scores, out ContentKind? hint) =>
+        ContentAnalyzer.Classify(label => scores.GetValueOrDefault(label), out hint);
+
+    [Fact]
     public void EveryLabelAndPresetExists()
     {
         foreach (var label in ContentAnalyzer.AllLabels) Assert.True(Model.Value.IndexOf(label) >= 0, label);
